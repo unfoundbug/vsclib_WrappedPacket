@@ -7,6 +7,8 @@ class SummedPacket
 private:
 	int packSize;
 	int actualDataSize;
+	int headerSize;
+	uint8_t* headerData;
 	uint8_t* internalPack;
 	uint8_t* Data();
 	int GetSendSize();
@@ -14,12 +16,12 @@ private:
 	int assemblyPointer;
 
 public:	
-	SummedPacket(int packSize);
+	SummedPacket(uint8_t* headerData, int headerSize, int packSize);
 
 	bool IsValid();
 	uint8_t &operator[](int i);
 
 	void WriteToStream(Stream& outStream);
-	bool FetchByte(Stream& inStream);
+	bool ParseFromStream(Stream& inStream);
 };
 #endif

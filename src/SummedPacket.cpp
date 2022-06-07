@@ -11,15 +11,21 @@
 		-1: SUM of all previous bytes (including XOR)
 
 */
-SummedPacket::SummedPacket(int packSize){
+SummedPacket::SummedPacket(uint8_t* headerData, int headerSize, int packSize){
 	this->packSize = packSize;
-	this->actualDataSize = packSize + 5;
-	this->internalPack = new uint8_t[this->actualDataSize];
-	this->internalPack[0] = 0x5e;
-	this->internalPack[1] = 0xe5;
-	this->internalPack[2] = (uint8_t)packSize;
+	this->actualDataSize = packSize + headerSize + 3;
+	
+	this->headerSize = headerSize;
+	this->headerData = headerData;
+	this->internalPack = new uint8_t[this->actualDataSize];	
+	for(int i = 0; i < headerSize; ++i)
+		this->internalPack[i] = headerData[i];
+	
+	this->internalPack[headerSize] = (uint8_t)packSize;
+	++this->headerSize;
+	
 	assemblyPointer = 0;
-	for(int i = 3; i < actualDataSize; ++i){
+	for(int i = headerSize; i < actualDataSize; ++i){
 		internalPack[i] = 0;
 	}	
 }
@@ -62,17 +68,17 @@ bool SummedPacket::IsValid()
 }
 
 uint8_t &SummedPacket::operator[](int i){
-	return this->internalPack[i+3];
+	return this->internalPack[i+this->headerSize];
 }
 
 void SummedPacket::WriteToStream(Stream& outStream){
 	outStream.write(this->Data(), this->actualDataSize);
 }
-bool SummedPacket::FetchByte(Stream& inStream)
+bool SummedPacket::ParseFromStream(Stream& inStream)
 {
 	while(inStream.available()){
 		uint8_t newByte = inStream.read();
-		if(this->assemblyPointer < 3)
+		if(this->assemblyPointer < this->headerSize)
 		{
 			if(newByte == this->internalPack[this->assemblyPointer])
 			{
