@@ -1,0 +1,26 @@
+{
+  "name": "WrappedBytes",
+  "version": "0.0.1",
+  "description": "Bytes Wrapped in header and CS for noisy byte stream processing",
+  "keywords": "Communication",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/unfoundbug/vsclib_WrappedPacket.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Nathan Hickling",
+      "email": "no@no.com",
+      "url": "https://github.com/unfoundbug/vsclib_WrappedPacket"
+    },
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/unfoundbug/vsclib_WrappedPacket",
+  "dependencies": {
+    "ownername/print": "~1.3.0"
+  },
+  "frameworks": "*",
+  "platforms": "*"
+}
